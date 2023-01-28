@@ -7,9 +7,12 @@ def clean_zipcode(zipcode)
 end
 
 def clean_phone_number(number)
-  invalid_chars = [' ', '-', '.', '(', ')']
-  number.chars.map do |num|
-    invalid_chars.include?(num) ? '' : num
+  if number.scan(/\d+/).join("").length == 10
+    number.scan(/\d+/).join("").insert(3, '-').insert(7, '-')
+  elsif number.scan(/\d+/).join("").length > 10
+    number.scan(/\d+/).join("")[1..10].insert(3, '-').insert(7, '-')
+  else
+    "N/A"
   end
 end
 
