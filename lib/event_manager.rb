@@ -7,12 +7,13 @@ def clean_zipcode(zipcode)
 end
 
 def clean_phone_number(number)
-  if number.scan(/\d+/).join("").length == 10
-    number.scan(/\d+/).join("").insert(3, '-').insert(7, '-')
-  elsif number.scan(/\d+/).join("").length > 10
-    number.scan(/\d+/).join("")[1..10].insert(3, '-').insert(7, '-')
+  clean_number = number.scan(/\d+/).join('')
+  if clean_number.length == 10
+    clean_number.insert(3, '-').insert(7, '-')
+  elsif clean_number.length > 10 && clean_number[0] == '1'
+    clean_number[1..10].insert(3, '-').insert(7, '-')
   else
-    "N/A"
+    'N/A'
   end
 end
 
