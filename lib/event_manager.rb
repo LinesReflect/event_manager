@@ -47,35 +47,34 @@ end
 
 puts 'Event Manager Initialized!'
 
-contents = CSV.open(
-  'event_attendees.csv',
-  headers: true,
-  header_converters: :symbol
-)
-
-# template_letter = File.read('form_letter.erb')
-# erb_template = ERB.new template_letter
-
-contents.each do |row|
-  time_frame = Array.new(4,0)
-  id = row[0]
-  date = format_time(row[:regdate])
-  name = row[:first_name]
-  phone_number = clean_phone_number(row[:homephone])
-  zipcode = clean_zipcode(row[:zipcode])
-  legislators = legislators_by_zipcode(zipcode)
-  # puts "#{name}, #{phone_number} -------- #{date}"
-  # form_letter = erb_template.result(binding)
-  # save_thank_you_letter(id, form_letter)
-end
-
-def popular_hour
-  hours = Hash.new { |h, k| h[k] = 0 }
-  contents = CSV.open(
+def open_content
+  content = CSV.open(
     'event_attendees.csv',
     headers: true,
     header_converters: :symbol
   )
+end
+
+# template_letter = File.read('form_letter.erb')
+# erb_template = ERB.new template_letter
+def set_content
+  contents = open_content
+  contents.each do |row|
+    id = row[0]
+    date = format_time(row[:regdate])
+    name = row[:first_name]
+    phone_number = clean_phone_number(row[:homephone])
+    zipcode = clean_zipcode(row[:zipcode])
+    legislators = legislators_by_zipcode(zipcode)
+    # puts "#{name}, #{phone_number} -------- #{date}"
+    # form_letter = erb_template.result(binding)
+    # save_thank_you_letter(id, form_letter)
+  end
+end
+
+def popular_hour
+  hours = Hash.new { |h, k| h[k] = 0 }
+  contents = open_content
   contents.each do |row|
     date = format_time(row[:regdate])
     reg_hour = date.hour
