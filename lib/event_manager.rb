@@ -55,8 +55,10 @@ def open_content
   )
 end
 
-# template_letter = File.read('form_letter.erb')
-# erb_template = ERB.new template_letter
+template_letter = File.read('form_letter.erb')
+erb_template = ERB.new template_letter
+
+
 def set_content
   contents = open_content
   contents.each do |row|
@@ -66,9 +68,8 @@ def set_content
     phone_number = clean_phone_number(row[:homephone])
     zipcode = clean_zipcode(row[:zipcode])
     legislators = legislators_by_zipcode(zipcode)
-    # puts "#{name}, #{phone_number} -------- #{date}"
-    # form_letter = erb_template.result(binding)
-    # save_thank_you_letter(id, form_letter)
+    form_letter = erb_template.result(binding)
+    save_thank_you_letter(id, form_letter)
   end
 end
 
@@ -80,7 +81,7 @@ def popular_hour
     reg_hour = date.hour
     hours[:"#{reg_hour}"] += 1
   end
-  most_popular_hour = hours.each { |k, v| puts "Hour #{k}: #{v} registrations." if v == hours.values.max}
+  hours.each { |k, v| puts "Hour #{k}: #{v} registrations." if v == hours.values.max}
 end
 
 def popular_day
@@ -91,5 +92,5 @@ def popular_day
     reg_day = date.wday
     days[:"#{reg_day}"] += 1
   end
-  most_popular_day = days.each { |k, v| puts "#{Date::DAYNAMES[k.to_s.to_i]}: #{v} registrations." if v == days.values.max}
+  days.each { |k, v| puts "#{Date::DAYNAMES[k.to_s.to_i]}: #{v} registrations." if v == days.values.max}
 end

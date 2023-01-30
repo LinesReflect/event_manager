@@ -20,8 +20,11 @@
           <td><%= "#{legislator.name}" %> </td>
           <td><%= "#{legislator.urls.join(" ")}" unless legislator.urls.nil? %></td>
         </tr>
-    <tr><th>Legislators</th></tr>
-    <tr><td><% legislators %></td></tr>
+        <% end %>
+    <% else %>
+        <th></th>
+        <td><%= "#{legislators}" %></td>
+    <% end %>
   </table>
 </body>
 </html>
