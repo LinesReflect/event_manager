@@ -1,6 +1,7 @@
 require 'csv'
 require 'google/apis/civicinfo_v2'
 require 'erb'
+require 'time'
 
 def clean_zipcode(zipcode)
   zipcode.to_s.rjust(5, '0')[0..4]
@@ -15,6 +16,11 @@ def clean_phone_number(number)
   else
     'N/A'
   end
+end
+
+def format_time(time)
+  time = time.scan(/\d+/)
+  Time.new("20#{time[2]}", time[0], time[1], time[3],time[4])
 end
 
 def legislators_by_zipcode(zip)
@@ -51,12 +57,29 @@ contents = CSV.open(
 # erb_template = ERB.new template_letter
 
 contents.each do |row|
+  time_frame = Array.new(4,0)
   id = row[0]
+  date = format_time(row[:regdate])
   name = row[:first_name]
   phone_number = clean_phone_number(row[:homephone])
   zipcode = clean_zipcode(row[:zipcode])
   legislators = legislators_by_zipcode(zipcode)
-  puts "#{name}, #{phone_number}"
+  # puts "#{name}, #{phone_number} -------- #{date}"
   # form_letter = erb_template.result(binding)
   # save_thank_you_letter(id, form_letter)
+end
+
+def popular_hour
+  hours = Hash.new { |h, k| h[k] = 0 }
+  contents = CSV.open(
+    'event_attendees.csv',
+    headers: true,
+    header_converters: :symbol
+  )
+  contents.each do |row|
+    date = format_time(row[:regdate])
+    reg_hour = date.hour
+    hours[:"#{reg_hour}"] += 1
+  end
+  most_popular_hour = hours.each { |k, v| puts "Hour #{k}: #{v} registrations." if v == hours.values.max}
 end
