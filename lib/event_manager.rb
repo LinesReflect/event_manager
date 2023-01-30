@@ -82,3 +82,14 @@ def popular_hour
   end
   most_popular_hour = hours.each { |k, v| puts "Hour #{k}: #{v} registrations." if v == hours.values.max}
 end
+
+def popular_day
+  days = Hash.new { |h, k | h[k] = 0 }
+  contents = open_content
+  contents.each do |row|
+    date = format_time(row[:regdate])
+    reg_day = date.wday
+    days[:"#{reg_day}"] += 1
+  end
+  most_popular_day = days.each { |k, v| puts "#{Date::DAYNAMES[k.to_s.to_i]}: #{v} registrations." if v == days.values.max}
+end
